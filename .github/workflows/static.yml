@@ -34,11 +34,6 @@ jobs:
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
-      # --- NOVO PASSO: CRIA O ARQUIVO CNAME ---
-      # Substitua 'www.anthracite.com.br' pelo seu domínio real
-      - name: Create CNAME
-        run: echo "www.anthracite.com.br" > CNAME
-
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
