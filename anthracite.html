@@ -10,281 +10,7 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;800&family=JetBrains+Mono:wght@400;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
     
-    <style>
-        :root {
-            /* Palette Anthracite Premium */
-            --bg-deep: #050505;
-            --bg-card: rgba(20, 20, 22, 0.7);
-            --border-light: rgba(255, 255, 255, 0.08);
-            --border-hover: rgba(255, 255, 255, 0.15);
-            
-            /* Accent Colors */
-            --primary: #6366f1; /* Indigo */
-            --primary-glow: rgba(99, 102, 241, 0.5);
-            --secondary: #10b981; /* Emerald */
-            
-            /* Text */
-            --text-main: #ffffff;
-            --text-muted: #94a3b8;
-            
-            /* Layout */
-            --max-width: 1280px;
-            --header-height: 70px;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-font-smoothing: antialiased;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        html {
-            scroll-behavior: smooth;
-            font-size: 16px;
-        }
-
-        body {
-            background-color: var(--bg-deep);
-            color: var(--text-main);
-            font-family: 'Inter', sans-serif;
-            overflow-x: hidden;
-            position: relative;
-            line-height: 1.6;
-        }
-
-        /* --- BACKGROUNDS --- */
-        .noise-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            pointer-events: none; z-index: 9999; opacity: 0.04;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='1'/%3E%3C/svg%3E");
-        }
-
-        #canvas-container {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
-            z-index: -1;
-            mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
-            -webkit-mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
-        }
-
-        /* --- TYPOGRAPHY --- */
-        h1, h2, h3, h4 { font-family: 'Space Grotesk', sans-serif; letter-spacing: -0.02em; line-height: 1.2; }
-        .mono { font-family: 'JetBrains Mono', monospace; }
-        .gradient-text {
-            background: linear-gradient(to right, #fff, #94a3b8);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .container {
-            max-width: var(--max-width);
-            margin: 0 auto;
-            padding: 0 24px;
-            width: 100%;
-        }
-
-        .section-spacer { padding: 100px 0; }
-
-        /* --- BUTTONS --- */
-        .btn {
-            display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-            padding: 12px 24px; border-radius: 8px;
-            font-weight: 600; font-size: 0.95rem; text-decoration: none;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative; overflow: hidden; white-space: nowrap;
-        }
-
-        .btn-primary {
-            background: var(--primary); color: white;
-            border: 1px solid rgba(255,255,255,0.1);
-            box-shadow: 0 0 0 1px rgba(99, 102, 241, 0.2), 0 10px 20px -5px rgba(99, 102, 241, 0.4);
-        }
-        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 0 0 1px rgba(99, 102, 241, 0.4), 0 20px 40px -10px rgba(99, 102, 241, 0.6); }
-
-        .btn-glass {
-            background: rgba(255, 255, 255, 0.05); color: white;
-            border: 1px solid var(--border-light); backdrop-filter: blur(10px);
-        }
-        .btn-glass:hover { background: rgba(255, 255, 255, 0.1); border-color: var(--text-main); }
-
-        /* --- HEADER & NAV --- */
-        header {
-            position: fixed; top: 0; width: 100%; z-index: 1000;
-            background: rgba(5, 5, 5, 0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-            border-bottom: 1px solid var(--border-light);
-            height: var(--header-height);
-        }
-
-        .nav-content {
-            height: 100%; display: flex; align-items: center; justify-content: space-between;
-        }
-
-        .logo {
-            font-weight: 800; font-size: 1.25rem; display: flex; align-items: center; gap: 10px;
-            color: white; text-transform: uppercase; letter-spacing: 1px; z-index: 1001;
-        }
-
-        .logo-icon {
-            width: 24px; height: 24px;
-            background: linear-gradient(135deg, var(--primary), #a855f7);
-            border-radius: 4px; box-shadow: 0 0 15px var(--primary-glow);
-        }
-
-        /* Desktop Nav */
-        .desktop-nav { display: flex; gap: 30px; align-items: center; }
-        .desktop-nav a { color: var(--text-muted); text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: 0.2s; }
-        .desktop-nav a:hover { color: white; }
-
-        /* Mobile Menu Button */
-        .mobile-menu-btn {
-            display: none; background: none; border: none; color: white; cursor: pointer; z-index: 1001;
-        }
-
-        /* Mobile Nav Overlay */
-        .mobile-nav-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
-            background: rgba(5, 5, 5, 0.98); backdrop-filter: blur(20px);
-            display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 30px;
-            transform: translateY(-100%); transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-            z-index: 1000;
-        }
-        .mobile-nav-overlay.active { transform: translateY(0); }
-        .mobile-nav-overlay a { font-size: 1.5rem; font-weight: 600; color: white; text-decoration: none; }
-
-        /* --- HERO --- */
-        .hero {
-            min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center;
-            text-align: center; padding-top: var(--header-height); padding-bottom: 40px;
-        }
-
-        .hero-badge {
-            background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3); color: #a5b4fc;
-            padding: 6px 14px; border-radius: 99px; font-size: 0.75rem; font-weight: 500;
-            margin-bottom: 24px; font-family: 'JetBrains Mono', monospace; display: inline-block;
-        }
-
-        .hero h1 {
-            font-size: clamp(2.5rem, 8vw, 5rem); line-height: 1.1; margin-bottom: 24px; font-weight: 800;
-        }
-
-        .hero p {
-            font-size: clamp(1rem, 4vw, 1.25rem); color: var(--text-muted); max-width: 650px; margin-bottom: 40px;
-        }
-
-        .hero-btns { display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; width: 100%; }
-
-        /* --- STATS GRID --- */
-        .stats-container {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 20px; border-top: 1px solid var(--border-light); border-bottom: 1px solid var(--border-light);
-            background: rgba(255,255,255,0.02); padding: 40px 24px;
-        }
-        .stat-item { text-align: center; }
-        .stat-val { font-size: clamp(2rem, 5vw, 2.5rem); font-weight: 800; color: white; display: block; margin-bottom: 5px; }
-        .stat-label { color: var(--text-muted); text-transform: uppercase; font-size: 0.75rem; letter-spacing: 1px; }
-
-        /* --- FEATURES BENTO GRID (Responsive) --- */
-        .features-grid {
-            display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
-        }
-        
-        .spotlight-card {
-            background-color: var(--bg-card); border: 1px solid var(--border-light); border-radius: 16px;
-            padding: 32px; position: relative; overflow: hidden;
-            display: flex; flex-direction: column; justify-content: space-between;
-            transition: transform 0.2s;
-        }
-        
-        /* Grid Spans logic */
-        .span-2 { grid-column: span 2; }
-
-        /* --- MOCKUP TERMINAL --- */
-        .ui-mockup {
-            background: #0f0f11; border: 1px solid var(--border-light); border-radius: 12px;
-            padding: 20px; font-family: 'JetBrains Mono', monospace; font-size: 0.8rem;
-            color: #a1a1aa; margin-top: 24px; position: relative; overflow: hidden;
-            width: 100%;
-        }
-        .ui-mockup::before {
-            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 2px;
-            background: linear-gradient(90deg, transparent, var(--primary), transparent);
-            animation: scan 3s linear infinite;
-        }
-        .cmd-line { display: flex; gap: 10px; margin-bottom: 8px; flex-wrap: wrap; }
-        .cmd-line span { white-space: pre-wrap; word-break: break-all; }
-        .cmd-prompt { color: var(--secondary); flex-shrink: 0; }
-        .cmd-text { color: #fff; }
-        .cmd-success { color: var(--secondary); }
-
-        /* --- SECURITY SECTION (Responsive Flex) --- */
-        .security-wrapper {
-            display: flex; gap: 60px; align-items: center;
-        }
-        
-        .sec-grid {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 30px; margin-top: 40px;
-        }
-
-        /* --- FOOTER --- */
-        footer { background: #020202; border-top: 1px solid var(--border-light); padding: 80px 0 40px; }
-        .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px; margin-bottom: 60px; }
-        .footer-col h4 { color: white; margin-bottom: 20px; font-size: 1rem; }
-        .footer-col ul { list-style: none; }
-        .footer-col ul li { margin-bottom: 12px; }
-        .footer-col a { color: var(--text-muted); text-decoration: none; transition: color 0.2s; font-size: 0.9rem; }
-        .footer-col a:hover { color: white; }
-        .footer-bottom { border-top: 1px solid var(--border-light); padding-top: 30px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px; }
-
-        /* --- MEDIA QUERIES (O SEGREDO DA RESPONSIVIDADE) --- */
-        
-        /* Tablet & Small Desktop (Max 1024px) */
-        @media (max-width: 1024px) {
-            .features-grid { grid-template-columns: repeat(2, 1fr); }
-            .span-2 { grid-column: span 2; } /* Mantém cartões grandes */
-        }
-
-        /* Mobile & Tablet Portrait (Max 768px) */
-        @media (max-width: 768px) {
-            .section-spacer { padding: 60px 0; }
-            
-            /* Nav */
-            .desktop-nav { display: none; }
-            .mobile-menu-btn { display: block; }
-            
-            /* Features: Tudo vira 1 coluna */
-            .features-grid { grid-template-columns: 1fr; }
-            .span-2 { grid-column: span 1; }
-            
-            /* Security */
-            .security-wrapper { flex-direction: column; text-align: left; }
-            
-            /* Footer */
-            .footer-grid { grid-template-columns: 1fr 1fr; gap: 30px; }
-            .footer-col:first-child { grid-column: span 2; margin-bottom: 20px; }
-        }
-
-        /* Small Mobile (Max 480px) */
-        @media (max-width: 480px) {
-            .hero-btns { flex-direction: column; width: 100%; }
-            .btn { width: 100%; }
-            .footer-grid { grid-template-columns: 1fr; text-align: center; }
-            .footer-col:first-child { grid-column: span 1; }
-            .footer-bottom { flex-direction: column; justify-content: center; }
-            
-            /* Ajuste fino de padding nos cards */
-            .spotlight-card { padding: 24px; }
-        }
-
-        /* Animations Keyframes */
-        @keyframes scan { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
-        
-        /* Reveal on Scroll Class */
-        .reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s ease-out; }
-        .reveal.active { opacity: 1; transform: translateY(0); }
-
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
@@ -293,9 +19,9 @@
 
     <div class="mobile-nav-overlay" id="mobileNav">
         <a href="#features" onclick="toggleMenu()">Funcionalidades</a>
+        <a href="#interface" onclick="toggleMenu()">Interface</a>
         <a href="#security" onclick="toggleMenu()">Segurança</a>
-        <a href="#download" onclick="toggleMenu()">Download</a>
-        <a href="#" onclick="toggleMenu()" style="color: var(--primary)">Documentação</a>
+        <a href="#" onclick="toggleMenu()" style="color: var(--primary)">Download</a>
     </div>
 
     <header>
@@ -307,6 +33,7 @@
             
             <nav class="desktop-nav">
                 <a href="#features">Funcionalidades</a>
+                <a href="#interface">Interface</a>
                 <a href="#security">Segurança</a>
                 <a href="#" class="btn btn-glass" style="padding: 8px 16px; font-size: 0.85rem;">Documentação</a>
             </nav>
@@ -324,7 +51,7 @@
             <p class="reveal active">Gerencie projetos, automatize infraestrutura e monitore vulnerabilidades em tempo real. O sistema definitivo para desenvolvedores que não aceitam atalhos.</p>
             
             <div class="hero-btns reveal active">
-                <a href="https://github.com/Felipe-M2/Pagina-Anthracite/releases/download/v1.0.0/Instalador_Anthracite_v1.0.exe" class="btn btn-primary">
+                <a href="#" class="btn btn-primary">
                     <i data-lucide="download-cloud"></i> Download v1.0 (Win64)
                 </a>
             </div>
@@ -356,7 +83,7 @@
                     <div>
                         <div class="card-icon-box"><i data-lucide="cpu"></i></div>
                         <h3 class="card-title">Automação de Projetos</h3>
-                        <p class="card-desc">Criação instantânea de scaffolding. O sistema configura pastas locais, inicializa repositórios Git, cria branches e integra com sua IDE (VSCode, JetBrains) automaticamente.</p>
+                        <p class="card-desc">Criação instantânea de scaffolding. O sistema configura pastas locais, inicializa repositórios Git e integra com sua IDE automaticamente.</p>
                     </div>
                     <div class="ui-mockup">
                         <div class="cmd-line"><span class="cmd-prompt">$</span><span class="cmd-text">anthracite init project-alpha --git</span></div>
@@ -368,19 +95,19 @@
                 <div class="spotlight-card reveal">
                     <div class="card-icon-box"><i data-lucide="kanban"></i></div>
                     <h3 class="card-title">Kanban & Fluxos</h3>
-                    <p class="card-desc">Visualização clara de tarefas. Arraste cards, desenhe fluxogramas de arquitetura integrados e documente tudo sem sair do contexto.</p>
+                    <p class="card-desc">Visualização clara de tarefas. Arraste cards e desenhe fluxogramas de arquitetura integrados.</p>
                 </div>
 
                 <div class="spotlight-card reveal">
                     <div class="card-icon-box"><i data-lucide="shield-alert"></i></div>
                     <h3 class="card-title">Vuln Scanner</h3>
-                    <p class="card-desc">Varredura estática de código (SAST) integrada. Identifica vulnerabilidades conhecidas, registra o histórico de correções e bloqueia deploys inseguros.</p>
+                    <p class="card-desc">Varredura estática de código (SAST) integrada. Identifica vulnerabilidades conhecidas antes do commit.</p>
                 </div>
 
                 <div class="spotlight-card span-2 reveal">
                     <div class="card-icon-box"><i data-lucide="server"></i></div>
                     <h3 class="card-title">Infraestrutura & Ativos</h3>
-                    <p class="card-desc" style="margin-bottom: 20px;">Monitore a saúde dos seus serviços. Ping check, validação de APIs e status de bancos de dados em tempo real.</p>
+                    <p class="card-desc" style="margin-bottom: 20px;">Monitore a saúde dos seus serviços. Ping check, validação de APIs e status de bancos de dados.</p>
                     
                     <div style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 8px;">
                         <div style="display:flex; justify-content:space-between; margin-bottom:10px; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:5px;">
@@ -397,13 +124,113 @@
                 <div class="spotlight-card reveal">
                     <div class="card-icon-box"><i data-lucide="lock"></i></div>
                     <h3 class="card-title">Vault Criptografado</h3>
-                    <p class="card-desc">Suas credenciais nunca tocam em texto plano. API local para injeção de segredos em tempo de execução durante o desenvolvimento.</p>
+                    <p class="card-desc">Suas credenciais nunca tocam em texto plano. API local para injeção de segredos.</p>
                 </div>
 
                 <div class="spotlight-card reveal">
                     <div class="card-icon-box"><i data-lucide="clock"></i></div>
                     <h3 class="card-title">Ponto & Alocação</h3>
-                    <p class="card-desc">Controle de jornada com alocação inteligente. Saiba exatamente quanto tempo foi gasto em "Debugging" vs "Feature Nova". Dashboard completo.</p>
+                    <p class="card-desc">Controle de jornada com alocação inteligente. Saiba exatamente quanto tempo foi gasto em cada tarefa.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="interface" class="section-spacer container">
+            <div class="reveal">
+                <span class="hero-badge" style="border-color: #a855f7; color: #a855f7; background: rgba(168, 85, 247, 0.1);">UI / UX DESIGN</span>
+                <h2 style="font-size: clamp(2rem, 4vw, 2.5rem); margin-bottom: 40px;">Construído para Foco.<br><span class="gradient-text">Zero Distrações.</span></h2>
+            </div>
+
+            <div class="interface-wrapper reveal">
+                <div class="interface-menu">
+                    <button class="interface-btn active" onclick="showScreen('dashboard')">
+                        <i data-lucide="layout-dashboard"></i>
+                        <div class="btn-text">
+                            <strong>Dashboard</strong>
+                            <span>Visão geral</span>
+                        </div>
+                    </button>
+
+                    <button class="interface-btn" onclick="showScreen('projetos')">
+                        <i data-lucide="folder-git-2"></i>
+                        <div class="btn-text">
+                            <strong>Projetos</strong>
+                            <span>Gestão de repositórios</span>
+                        </div>
+                    </button>
+
+                    <button class="interface-btn" onclick="showScreen('ativos')">
+                        <i data-lucide="server"></i>
+                        <div class="btn-text">
+                            <strong>Infraestrutura</strong>
+                            <span>Monitoramento de ativos</span>
+                        </div>
+                    </button>
+                    
+                    <button class="interface-btn" onclick="showScreen('cofre')">
+                        <i data-lucide="shield-check"></i>
+                        <div class="btn-text">
+                            <strong>Cofre (Vault)</strong>
+                            <span>Segurança de credenciais</span>
+                        </div>
+                    </button>
+
+                    <button class="interface-btn" onclick="showScreen('agenda')">
+                        <i data-lucide="calendar"></i>
+                        <div class="btn-text">
+                            <strong>Agenda</strong>
+                            <span>Compromissos e Prazos</span>
+                        </div>
+                    </button>
+
+                    <button class="interface-btn" onclick="showScreen('metas')">
+                        <i data-lucide="target"></i>
+                        <div class="btn-text">
+                            <strong>Metas</strong>
+                            <span>Objetivos de curto/longo prazo</span>
+                        </div>
+                    </button>
+
+                    <button class="interface-btn" onclick="showScreen('estudos')">
+                        <i data-lucide="graduation-cap"></i>
+                        <div class="btn-text">
+                            <strong>Estudos</strong>
+                            <span>Plano de aprendizado</span>
+                        </div>
+                    </button>
+
+                    <button class="interface-btn" onclick="showScreen('notas')">
+                        <i data-lucide="sticky-note"></i>
+                        <div class="btn-text">
+                            <strong>Anotações</strong>
+                            <span>Bloco de notas rápido</span>
+                        </div>
+                    </button>
+
+                    <button class="interface-btn" onclick="showScreen('ponto')">
+                        <i data-lucide="clock"></i>
+                        <div class="btn-text">
+                            <strong>Ponto</strong>
+                            <span>Controle de horas</span>
+                        </div>
+                    </button>
+                </div>
+
+                <div class="interface-preview">
+                    <div class="window-frame">
+                        <div class="window-header">
+                            <div class="window-dots">
+                                <span style="background:#ff5f56"></span>
+                                <span style="background:#ffbd2e"></span>
+                                <span style="background:#27c93f"></span>
+                            </div>
+                            <div class="window-address">anthracite://local/dashboard</div>
+                        </div>
+                        <div class="window-content">
+                            <img id="screen-img" src="images/tela_pagina_inicial.png" alt="Interface do Sistema">
+                            <div class="scan-line"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
@@ -413,7 +240,7 @@
                 <div style="flex: 1;">
                     <span class="hero-badge" style="border-color: var(--secondary); color: var(--secondary); background: rgba(16, 185, 129, 0.1);">ARCHITECTURE</span>
                     <h2 style="font-size: clamp(2rem, 4vw, 3rem); margin-bottom: 24px;">Segurança não é uma feature.<br>É a base.</h2>
-                    <p style="color: var(--text-muted); margin-bottom: 40px;">O Anthracite opera localmente. Seus códigos, senhas e estratégias nunca saem da sua máquina a menos que você explicitamente envie para o GitHub ou Google Drive via integração segura.</p>
+                    <p style="color: var(--text-muted); margin-bottom: 40px;">O Anthracite opera localmente. Seus códigos, senhas e estratégias nunca saem da sua máquina.</p>
                     
                     <div class="sec-grid">
                         <div class="reveal">
@@ -446,16 +273,7 @@
                     <h4>Produto</h4>
                     <ul>
                         <li><a href="#">Changelog</a></li>
-                        <li><a href="#">Roadmap</a></li>
                         <li><a href="#">Download</a></li>
-                    </ul>
-                </div>
-                <div class="footer-col">
-                    <h4>Recursos</h4>
-                    <ul>
-                        <li><a href="#">Documentação</a></li>
-                        <li><a href="#">API Reference</a></li>
-                        <li><a href="#">Comunidade</a></li>
                     </ul>
                 </div>
                 <div class="footer-col">
@@ -467,10 +285,9 @@
                 </div>
             </div>
             <div class="footer-bottom">
-                <span style="color: var(--text-muted); font-size: 0.85rem;">&copy; 2024 Anthracite Systems. All rights reserved.</span>
+                <span style="color: var(--text-muted); font-size: 0.85rem;">&copy; 2025 Anthracite Systems. All rights reserved.</span>
                 <div style="display: flex; gap: 20px;">
                     <a href="#" style="color: var(--text-muted);"><i data-lucide="github" size="20"></i></a>
-                    <a href="#" style="color: var(--text-muted);"><i data-lucide="twitter" size="20"></i></a>
                     <a href="#" style="color: var(--text-muted);"><i data-lucide="linkedin" size="20"></i></a>
                 </div>
             </div>
@@ -478,44 +295,79 @@
     </footer>
 
     <script>
-        // Inicializa ícones Lucide
+        // Inicializa ícones
         lucide.createIcons();
+
+        // --- LÓGICA DA INTERFACE DE PRINTS ---
+        const screens = {
+            'dashboard': { src: 'images/tela_pagina_inicial.png', address: 'anthracite://home/dashboard' },
+            'projetos':  { src: 'images/pagina_projeto_info_1.png', address: 'anthracite://dev/projects/details' },
+            'ativos':    { src: 'images/pagina_ativos.png',       address: 'anthracite://infra/assets-monitor' },
+            'cofre':     { src: 'images/cofre_de_senha.png',      address: 'anthracite://security/vault' },
+            'agenda':    { src: 'images/pagina_agenda.png',       address: 'anthracite://user/calendar' },
+            'metas':     { src: 'images/pagina_metas.png',        address: 'anthracite://user/goals-tracker' },
+            'estudos':   { src: 'images/plano_estudos.png',       address: 'anthracite://user/study-plan' },
+            'notas':     { src: 'images/pagina_notas.png',        address: 'anthracite://user/notes' },
+            'ponto':     { src: 'images/pagina_folha_ponto.png',  address: 'anthracite://hr/timesheet' }
+        };
+
+        function showScreen(screenKey) {
+            const imgEl = document.getElementById('screen-img');
+            const addressEl = document.querySelector('.window-address');
+            const btns = document.querySelectorAll('.interface-btn');
+            
+            // Fade out
+            imgEl.style.opacity = '0.4';
+            
+            setTimeout(() => {
+                if(screens[screenKey]) {
+                    imgEl.src = screens[screenKey].src;
+                    addressEl.textContent = screens[screenKey].address;
+                }
+                // Fade in
+                imgEl.style.opacity = '1';
+            }, 200);
+
+            // Toggle active class
+            btns.forEach(btn => {
+                if(btn.getAttribute('onclick').includes(screenKey)) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+        }
 
         // --- MENU MOBILE ---
         const mobileNav = document.getElementById('mobileNav');
-        const menuIcon = document.querySelector('.mobile-menu-btn i');
         let isMenuOpen = false;
 
         function toggleMenu() {
             isMenuOpen = !isMenuOpen;
             if(isMenuOpen) {
                 mobileNav.classList.add('active');
-                // Altera ícone para X (se tiver lucide configurado para re-render)
-                document.body.style.overflow = 'hidden'; // Trava scroll
+                document.body.style.overflow = 'hidden';
             } else {
                 mobileNav.classList.remove('active');
-                document.body.style.overflow = 'auto'; // Destrava scroll
+                document.body.style.overflow = 'auto';
             }
         }
 
         // --- THREE.JS BACKGROUND ---
-        // Detecção de Mobile para reduzir partículas (Performance)
         const isMobile = window.innerWidth < 768;
-        
         const scene = new THREE.Scene();
         scene.fog = new THREE.FogExp2(0x050505, 0.002);
 
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: !isMobile }); // Desliga antialias no mobile
+        const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: !isMobile });
         
         const container = document.getElementById('canvas-container');
         renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // Limita pixel ratio
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         container.appendChild(renderer.domElement);
 
-        // Ajusta quantidade de partículas baseado no device
-        const particleCount = isMobile ? 40 : 100; // Menos partículas no mobile
-        const connectionDistance = isMobile ? 3.5 : 3; // Ajusta distância de conexão
+        const particleCount = isMobile ? 40 : 100;
+        const connectionDistance = isMobile ? 3.5 : 3;
 
         const particles = new THREE.BufferGeometry();
         const positions = new Float32Array(particleCount * 3);
@@ -525,41 +377,21 @@
             positions[i] = (Math.random() - 0.5) * 20; 
             positions[i+1] = (Math.random() - 0.5) * 20; 
             positions[i+2] = (Math.random() - 0.5) * 20; 
-            
-            velocities.push({
-                x: (Math.random() - 0.5) * 0.02,
-                y: (Math.random() - 0.5) * 0.02,
-                z: (Math.random() - 0.5) * 0.02
-            });
+            velocities.push({ x: (Math.random() - 0.5) * 0.02, y: (Math.random() - 0.5) * 0.02, z: (Math.random() - 0.5) * 0.02 });
         }
 
         particles.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-        
-        const particleMaterial = new THREE.PointsMaterial({
-            color: 0x6366f1,
-            size: 0.05,
-            transparent: true,
-            opacity: 0.8
-        });
-
+        const particleMaterial = new THREE.PointsMaterial({ color: 0x6366f1, size: 0.05, transparent: true, opacity: 0.8 });
         const particleSystem = new THREE.Points(particles, particleMaterial);
         scene.add(particleSystem);
 
-        const lineMaterial = new THREE.LineBasicMaterial({
-            color: 0x6366f1,
-            transparent: true,
-            opacity: 0.15
-        });
-
+        const lineMaterial = new THREE.LineBasicMaterial({ color: 0x6366f1, transparent: true, opacity: 0.15 });
         const linesGeometry = new THREE.BufferGeometry();
         const lines = new THREE.LineSegments(linesGeometry, lineMaterial);
         scene.add(lines);
 
         camera.position.z = 5;
-
-        // Mouse interaction (Funciona apenas desktop)
-        let mouseX = 0;
-        let mouseY = 0;
+        let mouseX = 0; let mouseY = 0;
         if (!isMobile) {
             document.addEventListener('mousemove', (e) => {
                 mouseX = (e.clientX - window.innerWidth / 2) * 0.001;
@@ -569,19 +401,16 @@
 
         function animate() {
             requestAnimationFrame(animate);
-
             const positions = particleSystem.geometry.attributes.position.array;
             
             for(let i = 0; i < particleCount; i++) {
                 const i3 = i * 3;
-                
                 positions[i3] += velocities[i].x;
                 positions[i3+1] += velocities[i].y;
                 positions[i3+2] += velocities[i].z;
-
-                if(positions[i3] > 10 || positions[i3] < -10) velocities[i].x *= -1;
-                if(positions[i3+1] > 10 || positions[i3+1] < -10) velocities[i].y *= -1;
-                if(positions[i3+2] > 10 || positions[i3+2] < -10) velocities[i].z *= -1;
+                if(Math.abs(positions[i3]) > 10) velocities[i].x *= -1;
+                if(Math.abs(positions[i3+1]) > 10) velocities[i].y *= -1;
+                if(Math.abs(positions[i3+2]) > 10) velocities[i].z *= -1;
             }
             particleSystem.geometry.attributes.position.needsUpdate = true;
 
@@ -592,57 +421,43 @@
                     const dy = positions[i*3+1] - positions[j*3+1];
                     const dz = positions[i*3+2] - positions[j*3+2];
                     const dist = Math.sqrt(dx*dx + dy*dy + dz*dz);
-
                     if(dist < connectionDistance) {
-                        linePositions.push(
-                            positions[i*3], positions[i*3+1], positions[i*3+2],
-                            positions[j*3], positions[j*3+1], positions[j*3+2]
-                        );
+                        linePositions.push(positions[i*3], positions[i*3+1], positions[i*3+2], positions[j*3], positions[j*3+1], positions[j*3+2]);
                     }
                 }
             }
             lines.geometry.setAttribute('position', new THREE.Float32BufferAttribute(linePositions, 3));
-
-            // Camera movement (suave)
+            
             camera.rotation.y += (mouseX - camera.rotation.y) * 0.05;
             camera.rotation.x += (mouseY - camera.rotation.x) * 0.05;
-
             renderer.render(scene, camera);
         }
         animate();
 
-        // Handle Resize
         window.addEventListener('resize', () => {
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, window.innerHeight);
         });
 
-        // --- SPOTLIGHT EFFECT (Desktop Only) ---
+        // Spotlight Effect
         if (!isMobile) {
             document.querySelectorAll('.spotlight-card').forEach(card => {
                 card.addEventListener('mousemove', e => {
                     const rect = card.getBoundingClientRect();
-                    const x = e.clientX - rect.left;
-                    const y = e.clientY - rect.top;
-                    card.style.setProperty('--mouse-x', `${x}px`);
-                    card.style.setProperty('--mouse-y', `${y}px`);
+                    card.style.setProperty('--mouse-x', `${e.clientX - rect.left}px`);
+                    card.style.setProperty('--mouse-y', `${e.clientY - rect.top}px`);
                 });
             });
         }
 
-        // --- SCROLL ANIMATION ---
-        const observerOptions = { threshold: 0.1 };
+        // Scroll Reveal
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('active');
-                }
+                if (entry.isIntersecting) entry.target.classList.add('active');
             });
-        }, observerOptions);
-
+        }, { threshold: 0.1 });
         document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-
     </script>
 </body>
 </html>
