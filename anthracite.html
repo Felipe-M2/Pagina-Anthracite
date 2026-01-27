@@ -8,248 +8,337 @@
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;800&family=JetBrains+Mono:wght@400;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://unpkg.com/@studio-freight/lenis@1.0.29/dist/lenis.min.js"></script>
     
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;800&family=JetBrains+Mono:wght@400;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body class="loading">
 
-    <div class="noise-overlay"></div>
-    <div id="canvas-container"></div>
-
-    <div class="mobile-nav-overlay" id="mobileNav">
-        <a href="#features" onclick="toggleMenu()">Funcionalidades</a>
-        <a href="#interface" onclick="toggleMenu()">Interface</a>
-        <a href="#security" onclick="toggleMenu()">Segurança</a>
-        <a href="#" onclick="toggleMenu()" style="color: var(--primary)">Download</a>
+    <div class="preloader">
+        <div class="loader-content">
+            <div class="loader-bar"><div class="loader-fill"></div></div>
+            <div class="loader-data">
+                <span class="mono">INITIALIZING CORE...</span>
+                <span class="mono loader-percent">0%</span>
+            </div>
+        </div>
     </div>
 
-    <header>
-        <div class="container nav-content">
-            <div class="logo">
-                <div class="logo-icon"></div>
-                Anthracite
-            </div>
-            
-            <nav class="desktop-nav">
-                <a href="#features">Funcionalidades</a>
-                <a href="#interface">Interface</a>
-                <a href="#security">Segurança</a>
-                <a href="#" class="btn btn-glass" style="padding: 8px 16px; font-size: 0.85rem;">Documentação</a>
-            </nav>
+    <div class="cursor-dot"></div>
+    <div class="cursor-circle"></div>
 
-            <button class="mobile-menu-btn" onclick="toggleMenu()">
-                <i data-lucide="menu" size="28"></i>
+    <div class="noise-layer"></div>
+    <div id="webgl-canvas"></div>
+    <div class="vignette-layer"></div>
+
+    <nav class="navbar">
+        <div class="container nav-wrapper">
+            <a href="#" class="logo">
+                <div class="logo-symbol"></div>
+                <span class="tracking-wide">ANTHRACITE</span>
+                <span class="version-badge mono">v1.0</span>
+            </a>
+            
+            <div class="nav-links desktop-only">
+                <a href="#modules" class="nav-item magnetic" data-i18n="nav_modules">Módulos</a>
+                <a href="#interface" class="nav-item magnetic" data-i18n="nav_interface">Interface</a>
+                <a href="#architect" class="nav-item magnetic" data-i18n="nav_architect">Architect</a>
+                <a href="#compliance" class="nav-item magnetic" data-i18n="nav_compliance">Compliance</a>
+                
+                <button id="lang-toggle" class="lang-btn magnetic">
+                    <i data-lucide="globe"></i> <span class="current-lang">BR</span>
+                </button>
+
+                <a href="#download" class="btn-nav magnetic" data-i18n="nav_deploy">Deploy System</a>
+            </div>
+
+            <button class="mobile-toggle magnetic">
+                <i data-lucide="menu"></i>
             </button>
         </div>
-    </header>
+    </nav>
+
+    <div class="mobile-menu-overlay" id="mobileNav">
+        <div class="mobile-menu-links">
+            <a href="#modules" class="mobile-link" onclick="toggleMenu()" data-i18n="nav_modules">Módulos</a>
+            <a href="#interface" class="mobile-link" onclick="toggleMenu()" data-i18n="nav_interface">Interface</a>
+            <a href="#architect" class="mobile-link" onclick="toggleMenu()" data-i18n="nav_architect">Architect</a>
+            <a href="#download" class="mobile-link highlight" onclick="toggleMenu()" data-i18n="nav_deploy">Download</a>
+        </div>
+    </div>
 
     <main>
-        <section class="hero container">
-            <span class="hero-badge reveal active">> SYSTEM STATUS: ONLINE</span>
-            <h1 class="reveal active">Hub Unificado de <br><span class="gradient-text">Engenharia & Segurança</span></h1>
-            <p class="reveal active">Gerencie projetos, automatize infraestrutura e monitore vulnerabilidades em tempo real. O sistema definitivo para desenvolvedores que não aceitam atalhos.</p>
-            
-            <div class="hero-btns reveal active">
-                <a href="https://github.com/Felipe-M2/Pagina-Anthracite/releases/download/v1.0.0/Instalador_Anthracite_v1.0.exe" class="btn btn-primary">
-                    <i data-lucide="download-cloud"></i> Download v1.0 (Win64)
-                </a>
+        <section class="hero-section">
+            <div class="container hero-container">
+                <div class="hero-status fade-up">
+                    <span class="status-indicator"></span>
+                    <span class="mono" data-i18n="hero_status">SYSTEM OPERATIONAL // SECURE</span>
+                </div>
+                
+                <h1 class="hero-title fade-up">
+                    <span data-i18n="hero_title_1">HUB UNIFICADO DE</span><br>
+                    <span class="gradient-text" data-i18n="hero_title_2">ENGENHARIA & SEC</span>
+                </h1>
+                
+                <p class="hero-desc fade-up" data-i18n="hero_desc">
+                    Abandone ferramentas fragmentadas. Gerencie projetos, automatize infraestrutura e monitore vulnerabilidades em um ambiente 100% local.
+                </p>
+                
+                <div class="hero-actions fade-up">
+                    <a href="#download" class="btn-primary magnetic">
+                        <i data-lucide="download-cloud"></i>
+                        <span data-i18n="btn_install">Instalar Core v1.0</span>
+                    </a>
+                    <a href="#interface" class="btn-secondary magnetic">
+                        <i data-lucide="play"></i>
+                        <span data-i18n="btn_demo">Ver Demo</span>
+                    </a>
+                </div>
             </div>
+            <!-- <div class="scroll-indicator"><div class="mouse"><div class="wheel"></div></div></div> -->
         </section>
 
-        <section class="stats-container reveal">
-            <div class="stat-item">
-                <span class="stat-val">AES-256</span>
-                <span class="stat-label">Criptografia</span>
-            </div>
-            <div class="stat-item">
-                <span class="stat-val">0ms</span>
-                <span class="stat-label">Dependência de Cloud</span>
-            </div>
-            <div class="stat-item">
-                <span class="stat-val">100%</span>
-                <span class="stat-label">Controle Local</span>
-            </div>
-        </section>
-
-        <section id="features" class="section-spacer container">
-            <div style="margin-bottom: 60px; max-width: 600px;" class="reveal">
-                <h2 style="font-size: clamp(2rem, 5vw, 2.5rem); margin-bottom: 16px;">Controle Total da Stack</h2>
-                <p style="color: var(--text-muted);">Do primeiro commit até a gestão de ativos. O Anthracite elimina a fricção entre ferramentas fragmentadas.</p>
-            </div>
-
-            <div class="features-grid">
-                <div class="spotlight-card span-2 reveal">
-                    <div>
-                        <div class="card-icon-box"><i data-lucide="cpu"></i></div>
-                        <h3 class="card-title">Automação de Projetos</h3>
-                        <p class="card-desc">Criação instantânea de scaffolding. O sistema configura pastas locais, inicializa repositórios Git e integra com sua IDE automaticamente.</p>
-                    </div>
-                    <div class="ui-mockup">
-                        <div class="cmd-line"><span class="cmd-prompt">$</span><span class="cmd-text">anthracite init project-alpha --git</span></div>
-                        <div class="cmd-line"><span class="cmd-text">> Creating directory structure...</span> <span class="cmd-success">DONE</span></div>
-                        <div class="cmd-line"><span class="cmd-text">> Initializing git repo...</span> <span class="cmd-success">DONE</span></div>
-                    </div>
+        <section class="stats-section">
+            <div class="container stats-grid">
+                <div class="stat-box fade-up">
+                    <span class="stat-number counter" data-target="256">0</span>
+                    <span class="stat-label mono" data-i18n="stat_enc">AES ENCRYPTION BITS</span>
                 </div>
-
-                <div class="spotlight-card reveal">
-                    <div class="card-icon-box"><i data-lucide="kanban"></i></div>
-                    <h3 class="card-title">Kanban & Fluxos</h3>
-                    <p class="card-desc">Visualização clara de tarefas. Arraste cards e desenhe fluxogramas de arquitetura integrados.</p>
+                <div class="stat-box fade-up">
+                    <span class="stat-number counter" data-target="0">100</span>
+                    <span class="stat-label mono" data-i18n="stat_cloud">CLOUD DEPENDENCY</span>
                 </div>
-
-                <div class="spotlight-card reveal">
-                    <div class="card-icon-box"><i data-lucide="shield-alert"></i></div>
-                    <h3 class="card-title">Vuln Scanner</h3>
-                    <p class="card-desc">Varredura estática de código (SAST) integrada. Identifica vulnerabilidades conhecidas antes do commit.</p>
-                </div>
-
-                <div class="spotlight-card span-2 reveal">
-                    <div class="card-icon-box"><i data-lucide="server"></i></div>
-                    <h3 class="card-title">Infraestrutura & Ativos</h3>
-                    <p class="card-desc" style="margin-bottom: 20px;">Monitore a saúde dos seus serviços. Ping check, validação de APIs e status de bancos de dados.</p>
-                    
-                    <div style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 8px;">
-                        <div style="display:flex; justify-content:space-between; margin-bottom:10px; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:5px;">
-                            <span class="mono" style="font-size:0.75rem; color:#fff;">API-Gateway</span>
-                            <span class="mono" style="font-size:0.75rem; color:var(--secondary);">● ONLINE</span>
-                        </div>
-                        <div style="display:flex; justify-content:space-between;">
-                            <span class="mono" style="font-size:0.75rem; color:#fff;">Legacy-Samba</span>
-                            <span class="mono" style="font-size:0.75rem; color:#fbbf24;">⚠ HIGH LATENCY</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="spotlight-card reveal">
-                    <div class="card-icon-box"><i data-lucide="lock"></i></div>
-                    <h3 class="card-title">Vault Criptografado</h3>
-                    <p class="card-desc">Suas credenciais nunca tocam em texto plano. API local para injeção de segredos.</p>
-                </div>
-
-                <div class="spotlight-card reveal">
-                    <div class="card-icon-box"><i data-lucide="clock"></i></div>
-                    <h3 class="card-title">Ponto & Alocação</h3>
-                    <p class="card-desc">Controle de jornada com alocação inteligente. Saiba exatamente quanto tempo foi gasto em cada tarefa.</p>
+                <div class="stat-box fade-up">
+                    <span class="stat-number counter" data-target="100">0</span>
+                    <span class="stat-label mono" data-i18n="stat_local">% LOCAL CONTROL</span>
                 </div>
             </div>
         </section>
 
-        <section id="interface" class="section-spacer container">
-            <div class="reveal">
-                <span class="hero-badge" style="border-color: #a855f7; color: #a855f7; background: rgba(168, 85, 247, 0.1);">UI / UX DESIGN</span>
-                <h2 style="font-size: clamp(2rem, 4vw, 2.5rem); margin-bottom: 40px;">Construído para Foco.<br><span class="gradient-text">Zero Distrações.</span></h2>
-            </div>
-
-            <div class="interface-wrapper reveal">
-                <div class="interface-menu">
-                    <button class="interface-btn active" onclick="showScreen('dashboard')">
-                        <i data-lucide="layout-dashboard"></i>
-                        <div class="btn-text">
-                            <strong>Dashboard</strong>
-                            <span>Visão geral</span>
-                        </div>
-                    </button>
-
-                    <button class="interface-btn" onclick="showScreen('projetos')">
-                        <i data-lucide="folder-git-2"></i>
-                        <div class="btn-text">
-                            <strong>Projetos</strong>
-                            <span>Gestão de repositórios</span>
-                        </div>
-                    </button>
-
-                    <button class="interface-btn" onclick="showScreen('ativos')">
-                        <i data-lucide="server"></i>
-                        <div class="btn-text">
-                            <strong>Infraestrutura</strong>
-                            <span>Monitoramento de ativos</span>
-                        </div>
-                    </button>
-                    
-                    <button class="interface-btn" onclick="showScreen('cofre')">
-                        <i data-lucide="shield-check"></i>
-                        <div class="btn-text">
-                            <strong>Cofre (Vault)</strong>
-                            <span>Segurança de credenciais</span>
-                        </div>
-                    </button>
-
-                    <button class="interface-btn" onclick="showScreen('agenda')">
-                        <i data-lucide="calendar"></i>
-                        <div class="btn-text">
-                            <strong>Agenda</strong>
-                            <span>Compromissos e Prazos</span>
-                        </div>
-                    </button>
-
-                    <button class="interface-btn" onclick="showScreen('metas')">
-                        <i data-lucide="target"></i>
-                        <div class="btn-text">
-                            <strong>Metas</strong>
-                            <span>Objetivos de curto/longo prazo</span>
-                        </div>
-                    </button>
-
-                    <button class="interface-btn" onclick="showScreen('estudos')">
-                        <i data-lucide="graduation-cap"></i>
-                        <div class="btn-text">
-                            <strong>Estudos</strong>
-                            <span>Plano de aprendizado</span>
-                        </div>
-                    </button>
-
-                    <button class="interface-btn" onclick="showScreen('notas')">
-                        <i data-lucide="sticky-note"></i>
-                        <div class="btn-text">
-                            <strong>Anotações</strong>
-                            <span>Bloco de notas rápido</span>
-                        </div>
-                    </button>
-
-                    <button class="interface-btn" onclick="showScreen('ponto')">
-                        <i data-lucide="clock"></i>
-                        <div class="btn-text">
-                            <strong>Ponto</strong>
-                            <span>Controle de horas</span>
-                        </div>
-                    </button>
+        <section id="modules" class="modules-section section-pad">
+            <div class="container">
+                <div class="section-header fade-up">
+                    <span class="section-tag mono" data-i18n="mod_tag">CORE MODULES</span>
+                    <h2 data-i18n="mod_title">Controle Total da Stack</h2>
                 </div>
 
-                <div class="interface-preview">
-                    <div class="window-frame">
-                        <div class="window-header">
-                            <div class="window-dots">
-                                <span style="background:#ff5f56"></span>
-                                <span style="background:#ffbd2e"></span>
-                                <span style="background:#27c93f"></span>
+                <div class="bento-grid">
+                    <div class="bento-card span-2 hover-tilt fade-up">
+                        <div class="card-content">
+                            <div class="icon-box"><i data-lucide="cpu"></i></div>
+                            <h3 data-i18n="card_auto_title">Automação de Projetos</h3>
+                            <p data-i18n="card_auto_desc">Scaffolding instantâneo. O sistema configura pastas, git e IDE automaticamente.</p>
+                        </div>
+                        <div class="terminal-mockup">
+                            <div class="term-header"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span></div>
+                            <div class="term-body mono">
+                                <p><span class="prompt">$</span> anthracite init project-x</p>
+                                <p class="success">> Allocating resources... OK</p>
                             </div>
-                            <div class="window-address">anthracite://local/dashboard</div>
                         </div>
-                        <div class="window-content">
-                            <img id="screen-img" src="images/tela_pagina_inicial.png" alt="Interface do Sistema">
-                            <div class="scan-line"></div>
+                    </div>
+
+                    <div class="bento-card hover-tilt fade-up">
+                        <div class="icon-box"><i data-lucide="shield-alert"></i></div>
+                        <h3 data-i18n="card_vuln_title">Vuln Scanner</h3>
+                        <p data-i18n="card_vuln_desc">SAST em tempo real. Bloqueie commits inseguros antes que eles aconteçam.</p>
+                    </div>
+
+                    <div class="bento-card hover-tilt fade-up">
+                        <div class="icon-box"><i data-lucide="kanban"></i></div>
+                        <h3 data-i18n="card_kanban_title">Kanban & Flow</h3>
+                        <p data-i18n="card_kanban_desc">Gestão visual de tarefas integrada ao código e commits.</p>
+                    </div>
+
+                    <div class="bento-card span-2 hover-tilt fade-up">
+                        <div class="card-content">
+                            <div class="icon-box"><i data-lucide="server"></i></div>
+                            <h3 data-i18n="card_infra_title">Infraestrutura & Ativos</h3>
+                            <p data-i18n="card_infra_desc">Monitoramento de latência, uptime e saúde de servidores.</p>
+                        </div>
+                        <div class="infra-mockup">
+                            <div class="infra-item"><span>API-Gateway</span><span class="badge online">ONLINE</span></div>
+                            <div class="infra-item"><span>DB-Master</span><span class="badge warning">LATENCY</span></div>
+                            <div class="infra-graph"></div>
+                        </div>
+                    </div>
+
+                    <div class="bento-card hover-tilt fade-up">
+                        <div class="icon-box"><i data-lucide="lock"></i></div>
+                        <h3 data-i18n="card_vault_title">Vault Seguro</h3>
+                        <p data-i18n="card_vault_desc">Credenciais criptografadas localmente. Nada de texto plano.</p>
+                    </div>
+
+                    <div class="bento-card hover-tilt fade-up">
+                        <div class="icon-box"><i data-lucide="clock"></i></div>
+                        <h3 data-i18n="card_time_title">Smart Tracking</h3>
+                        <p data-i18n="card_time_desc">Alocação de horas inteligente e relatórios de produtividade.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="interface" class="interface-section section-pad">
+            <div class="container">
+                <div class="interface-layout">
+                    <div class="interface-controls fade-right">
+                        <div class="section-header left-align">
+                            <span class="section-tag mono" data-i18n="ui_tag">UI / UX</span>
+                            <h2><span data-i18n="ui_title_1">Interface de</span><br><span data-i18n="ui_title_2">Alta Precisão</span></h2>
+                        </div>
+                        
+                        <div class="menu-list">
+                            <button class="menu-btn active" data-screen="dashboard">
+                                <i data-lucide="layout-dashboard"></i> 
+                                <div>
+                                    <strong data-i18n="menu_dash">Dashboard</strong>
+                                    <span data-i18n="menu_dash_desc">Visão Geral</span>
+                                </div>
+                            </button>
+                            <button class="menu-btn" data-screen="projetos">
+                                <i data-lucide="folder-git-2"></i> 
+                                <div><strong data-i18n="menu_proj">Projetos</strong><span data-i18n="menu_proj_desc">Gestão</span></div>
+                            </button>
+                            <button class="menu-btn" data-screen="projetos_detalhe">
+                                <i data-lucide="file-code"></i> 
+                                <div><strong data-i18n="menu_det">Detalhes</strong><span data-i18n="menu_det_desc">Metadados</span></div>
+                            </button>
+                            <button class="menu-btn" data-screen="ativos">
+                                <i data-lucide="server"></i> 
+                                <div><strong data-i18n="menu_infra">Ativos</strong><span data-i18n="menu_infra_desc">Monitor</span></div>
+                            </button>
+                            <button class="menu-btn" data-screen="cofre">
+                                <i data-lucide="shield-check"></i> 
+                                <div><strong data-i18n="menu_vault">Cofre</strong><span data-i18n="menu_vault_desc">Segurança</span></div>
+                            </button>
+                            <button class="menu-btn" data-screen="agenda">
+                                <i data-lucide="calendar"></i> 
+                                <div><strong data-i18n="menu_cal">Agenda</strong><span data-i18n="menu_cal_desc">Compromissos</span></div>
+                            </button>
+                            <button class="menu-btn" data-screen="metas">
+                                <i data-lucide="target"></i> 
+                                <div><strong data-i18n="menu_goals">Metas</strong><span data-i18n="menu_goals_desc">Objetivos</span></div>
+                            </button>
+                            <button class="menu-btn" data-screen="estudos">
+                                <i data-lucide="graduation-cap"></i> 
+                                <div><strong data-i18n="menu_study">Estudos</strong><span data-i18n="menu_study_desc">Plano</span></div>
+                            </button>
+                            <button class="menu-btn" data-screen="notas">
+                                <i data-lucide="sticky-note"></i> 
+                                <div><strong data-i18n="menu_notes">Notas</strong><span data-i18n="menu_notes_desc">Rápido</span></div>
+                            </button>
+                            <button class="menu-btn" data-screen="ponto">
+                                <i data-lucide="clock"></i> 
+                                <div><strong data-i18n="menu_clock">Ponto</strong><span data-i18n="menu_clock_desc">Horas</span></div>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="interface-display fade-left">
+                        <div class="window-frame hover-tilt-strong">
+                            <div class="window-topbar">
+                                <div class="traffic-lights"><span></span><span></span><span></span></div>
+                                <div class="address-bar mono">anthracite://local/dashboard</div>
+                            </div>
+                            <div class="window-viewport">
+                                <img id="screen-preview" src="images/tela_pagina_inicial.png" alt="Dashboard">
+                                <div class="scanlines"></div>
+                                <div class="screen-glare"></div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <section id="security" class="section-spacer" style="background: linear-gradient(to bottom, transparent, #0a0a0a); border-top: 1px solid var(--border-light);">
-            <div class="container security-wrapper">
-                <div style="flex: 1;">
-                    <span class="hero-badge" style="border-color: var(--secondary); color: var(--secondary); background: rgba(16, 185, 129, 0.1);">ARCHITECTURE</span>
-                    <h2 style="font-size: clamp(2rem, 4vw, 3rem); margin-bottom: 24px;">Segurança não é uma feature.<br>É a base.</h2>
-                    <p style="color: var(--text-muted); margin-bottom: 40px;">O Anthracite opera localmente. Seus códigos, senhas e estratégias nunca saem da sua máquina.</p>
-                    
-                    <div class="sec-grid">
-                        <div class="reveal">
-                            <h4 style="color: white; margin-bottom: 10px; display: flex; align-items: center; gap: 8px;"><i data-lucide="key" size="18"></i> Local-First</h4>
-                            <p style="font-size: 0.9rem; color: var(--text-muted);">Banco de dados SQLite criptografado local. Nada de SaaS enviando seus segredos.</p>
+        <section id="architect" class="architect-section section-pad">
+            <div class="container">
+                <div class="profile-card hover-tilt-strong fade-up">
+                    <div class="card-glow"></div>
+                    <div class="profile-layout">
+                        <div class="profile-visual">
+                            <div class="avatar-circle"><span>F</span><div class="orbit-ring"></div></div>
+                            <div class="profile-socials">
+                                <a href="#" class="magnetic"><i data-lucide="github"></i></a>
+                                <a href="#" class="magnetic"><i data-lucide="linkedin"></i></a>
+                            </div>
                         </div>
-                        <div class="reveal">
-                            <h4 style="color: white; margin-bottom: 10px; display: flex; align-items: center; gap: 8px;"><i data-lucide="eye-off" size="18"></i> Secret Injection</h4>
-                            <p style="font-size: 0.9rem; color: var(--text-muted);">Use nossa API local para não hardcodar senhas no código.</p>
+                        <div class="profile-data">
+                            <span class="role-tag mono" data-i18n="role_tag">LEAD ARCHITECT</span>
+                            <h3>Felipe M.</h3>
+                            <p data-i18n="profile_desc">Desenvolvedor Full Stack & Especialista em Segurança. Criador do ecossistema Anthracite com foco em performance e privacidade.</p>
+                            
+                            <div class="skill-bars">
+                                <div class="skill">
+                                    <div class="skill-meta"><span>Python</span><span>98%</span></div>
+                                    <div class="progress-track"><div class="progress-fill" style="width: 98%"></div></div>
+                                </div>
+                                <div class="skill">
+                                    <div class="skill-meta"><span>Cybersecurity</span><span>95%</span></div>
+                                    <div class="progress-track"><div class="progress-fill" style="width: 95%"></div></div>
+                                </div>
+                                <div class="skill">
+                                    <div class="skill-meta"><span>React</span><span>90%</span></div>
+                                    <div class="progress-track"><div class="progress-fill" style="width: 90%"></div></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="download" class="deploy-section section-pad">
+            <div class="container deploy-grid">
+                <div class="deploy-card hover-tilt fade-right">
+                    <div class="card-header">
+                        <h3 data-i18n="deploy_title">Deploy Environment</h3>
+                        <p data-i18n="deploy_sub">Stable Release v1.0.0</p>
+                    </div>
+                    <div class="os-tabs">
+                        <button class="os-tab active"><i data-lucide="monitor"></i> Win64</button>
+                        <button class="os-tab disabled"><i data-lucide="command"></i> MacOS</button>
+                        <button class="os-tab disabled"><i data-lucide="terminal"></i> Linux</button>
+                    </div>
+                    <div class="file-display mono">
+                        <span data-i18n="file_name">Instalador_Anthracite.exe</span>
+                        <span class="size">145 MB</span>
+                    </div>
+                    <a href="https://github.com/Felipe-M2/Pagina-Anthracite/releases/download/v1.0.0/Instalador_Anthracite_v1.0.exe" class="btn-deploy magnetic">
+                        <i data-lucide="download"></i> <span data-i18n="btn_download">INICIAR DOWNLOAD</span>
+                    </a>
+                    <div class="security-check">
+                        <i data-lucide="check-circle-2"></i> <span data-i18n="sec_check">Assinado Digitalmente & Verificado</span>
+                    </div>
+                </div>
+
+                <div class="compliance-info fade-left">
+                    <div class="section-header left-align">
+                        <span class="section-tag mono" data-i18n="comp_tag">LEGAL</span>
+                        <h3 data-i18n="comp_title">Protocolos de Dados</h3>
+                    </div>
+                    <div class="protocol-item">
+                        <div class="proto-icon"><i data-lucide="database"></i></div>
+                        <div>
+                            <strong data-i18n="comp_1_title">Local-First Architecture</strong>
+                            <p data-i18n="comp_1_desc">100% dos dados residem no seu dispositivo. Sem nuvem, sem telemetria oculta.</p>
+                        </div>
+                    </div>
+                    <div class="protocol-item">
+                        <div class="proto-icon"><i data-lucide="shield"></i></div>
+                        <div>
+                            <strong data-i18n="comp_2_title">LGPD & GDPR Compliant</strong>
+                            <p data-i18n="comp_2_desc">Você é o único controlador e operador dos seus dados. Conformidade total por design.</p>
+                        </div>
+                    </div>
+                    <div class="protocol-item">
+                        <div class="proto-icon"><i data-lucide="file-key"></i></div>
+                        <div>
+                            <strong data-i18n="comp_3_title">Licença de Uso</strong>
+                            <p data-i18n="comp_3_desc">Software fornecido "como está" para uso pessoal e profissional intransferível.</p>
                         </div>
                     </div>
                 </div>
@@ -257,207 +346,18 @@
         </section>
     </main>
 
-    <footer>
-        <div class="container">
-            <div class="footer-grid">
-                <div class="footer-col">
-                    <div class="logo" style="margin-bottom: 20px;">
-                        <div class="logo-icon"></div>
-                        ANTHRACITE
-                    </div>
-                    <p style="color: var(--text-muted); font-size: 0.9rem; max-width: 300px;">
-                        O sistema para a mente do desenvolvedor moderno. Organize, proteja e execute.
-                    </p>
-                </div>
-                <div class="footer-col">
-                    <h4>Produto</h4>
-                    <ul>
-                        <li><a href="#">Changelog</a></li>
-                        <li><a href="#">Download</a></li>
-                    </ul>
-                </div>
-                <div class="footer-col">
-                    <h4>Legal</h4>
-                    <ul>
-                        <li><a href="#">Privacidade</a></li>
-                        <li><a href="#">Termos</a></li>
-                    </ul>
-                </div>
+    <footer class="main-footer">
+        <div class="container footer-content">
+            <div class="footer-brand">
+                <div class="logo-symbol small"></div>
+                <span>ANTHRACITE SYSTEMS</span>
             </div>
-            <div class="footer-bottom">
-                <span style="color: var(--text-muted); font-size: 0.85rem;">&copy; 2025 Anthracite Systems. All rights reserved.</span>
-                <div style="display: flex; gap: 20px;">
-                    <a href="#" style="color: var(--text-muted);"><i data-lucide="github" size="20"></i></a>
-                    <a href="#" style="color: var(--text-muted);"><i data-lucide="linkedin" size="20"></i></a>
-                </div>
+            <div class="footer-meta mono">
+                &copy; 2025 Felipe M. All rights reserved.
             </div>
         </div>
     </footer>
 
-    <script>
-        // Inicializa ícones
-        lucide.createIcons();
-
-        // --- LÓGICA DA INTERFACE DE PRINTS ---
-        const screens = {
-            'dashboard': { src: 'images/tela_pagina_inicial.png', address: 'anthracite://home/dashboard' },
-            'projetos':  { src: 'images/pagina_projeto_info_1.png', address: 'anthracite://dev/projects/details' },
-            'ativos':    { src: 'images/pagina_ativos.png',       address: 'anthracite://infra/assets-monitor' },
-            'cofre':     { src: 'images/cofre_de_senha.png',      address: 'anthracite://security/vault' },
-            'agenda':    { src: 'images/pagina_agenda.png',       address: 'anthracite://user/calendar' },
-            'metas':     { src: 'images/pagina_metas.png',        address: 'anthracite://user/goals-tracker' },
-            'estudos':   { src: 'images/plano_estudos.png',       address: 'anthracite://user/study-plan' },
-            'notas':     { src: 'images/pagina_notas.png',        address: 'anthracite://user/notes' },
-            'ponto':     { src: 'images/pagina_folha_ponto.png',  address: 'anthracite://hr/timesheet' }
-        };
-
-        function showScreen(screenKey) {
-            const imgEl = document.getElementById('screen-img');
-            const addressEl = document.querySelector('.window-address');
-            const btns = document.querySelectorAll('.interface-btn');
-            
-            // Fade out
-            imgEl.style.opacity = '0.4';
-            
-            setTimeout(() => {
-                if(screens[screenKey]) {
-                    imgEl.src = screens[screenKey].src;
-                    addressEl.textContent = screens[screenKey].address;
-                }
-                // Fade in
-                imgEl.style.opacity = '1';
-            }, 200);
-
-            // Toggle active class
-            btns.forEach(btn => {
-                if(btn.getAttribute('onclick').includes(screenKey)) {
-                    btn.classList.add('active');
-                } else {
-                    btn.classList.remove('active');
-                }
-            });
-        }
-
-        // --- MENU MOBILE ---
-        const mobileNav = document.getElementById('mobileNav');
-        let isMenuOpen = false;
-
-        function toggleMenu() {
-            isMenuOpen = !isMenuOpen;
-            if(isMenuOpen) {
-                mobileNav.classList.add('active');
-                document.body.style.overflow = 'hidden';
-            } else {
-                mobileNav.classList.remove('active');
-                document.body.style.overflow = 'auto';
-            }
-        }
-
-        // --- THREE.JS BACKGROUND ---
-        const isMobile = window.innerWidth < 768;
-        const scene = new THREE.Scene();
-        scene.fog = new THREE.FogExp2(0x050505, 0.002);
-
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: !isMobile });
-        
-        const container = document.getElementById('canvas-container');
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-        container.appendChild(renderer.domElement);
-
-        const particleCount = isMobile ? 40 : 100;
-        const connectionDistance = isMobile ? 3.5 : 3;
-
-        const particles = new THREE.BufferGeometry();
-        const positions = new Float32Array(particleCount * 3);
-        const velocities = [];
-
-        for(let i = 0; i < particleCount * 3; i += 3) {
-            positions[i] = (Math.random() - 0.5) * 20; 
-            positions[i+1] = (Math.random() - 0.5) * 20; 
-            positions[i+2] = (Math.random() - 0.5) * 20; 
-            velocities.push({ x: (Math.random() - 0.5) * 0.02, y: (Math.random() - 0.5) * 0.02, z: (Math.random() - 0.5) * 0.02 });
-        }
-
-        particles.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-        const particleMaterial = new THREE.PointsMaterial({ color: 0x6366f1, size: 0.05, transparent: true, opacity: 0.8 });
-        const particleSystem = new THREE.Points(particles, particleMaterial);
-        scene.add(particleSystem);
-
-        const lineMaterial = new THREE.LineBasicMaterial({ color: 0x6366f1, transparent: true, opacity: 0.15 });
-        const linesGeometry = new THREE.BufferGeometry();
-        const lines = new THREE.LineSegments(linesGeometry, lineMaterial);
-        scene.add(lines);
-
-        camera.position.z = 5;
-        let mouseX = 0; let mouseY = 0;
-        if (!isMobile) {
-            document.addEventListener('mousemove', (e) => {
-                mouseX = (e.clientX - window.innerWidth / 2) * 0.001;
-                mouseY = (e.clientY - window.innerHeight / 2) * 0.001;
-            });
-        }
-
-        function animate() {
-            requestAnimationFrame(animate);
-            const positions = particleSystem.geometry.attributes.position.array;
-            
-            for(let i = 0; i < particleCount; i++) {
-                const i3 = i * 3;
-                positions[i3] += velocities[i].x;
-                positions[i3+1] += velocities[i].y;
-                positions[i3+2] += velocities[i].z;
-                if(Math.abs(positions[i3]) > 10) velocities[i].x *= -1;
-                if(Math.abs(positions[i3+1]) > 10) velocities[i].y *= -1;
-                if(Math.abs(positions[i3+2]) > 10) velocities[i].z *= -1;
-            }
-            particleSystem.geometry.attributes.position.needsUpdate = true;
-
-            const linePositions = [];
-            for(let i = 0; i < particleCount; i++) {
-                for(let j = i + 1; j < particleCount; j++) {
-                    const dx = positions[i*3] - positions[j*3];
-                    const dy = positions[i*3+1] - positions[j*3+1];
-                    const dz = positions[i*3+2] - positions[j*3+2];
-                    const dist = Math.sqrt(dx*dx + dy*dy + dz*dz);
-                    if(dist < connectionDistance) {
-                        linePositions.push(positions[i*3], positions[i*3+1], positions[i*3+2], positions[j*3], positions[j*3+1], positions[j*3+2]);
-                    }
-                }
-            }
-            lines.geometry.setAttribute('position', new THREE.Float32BufferAttribute(linePositions, 3));
-            
-            camera.rotation.y += (mouseX - camera.rotation.y) * 0.05;
-            camera.rotation.x += (mouseY - camera.rotation.x) * 0.05;
-            renderer.render(scene, camera);
-        }
-        animate();
-
-        window.addEventListener('resize', () => {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-        });
-
-        // Spotlight Effect
-        if (!isMobile) {
-            document.querySelectorAll('.spotlight-card').forEach(card => {
-                card.addEventListener('mousemove', e => {
-                    const rect = card.getBoundingClientRect();
-                    card.style.setProperty('--mouse-x', `${e.clientX - rect.left}px`);
-                    card.style.setProperty('--mouse-y', `${e.clientY - rect.top}px`);
-                });
-            });
-        }
-
-        // Scroll Reveal
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) entry.target.classList.add('active');
-            });
-        }, { threshold: 0.1 });
-        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
