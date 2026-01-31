@@ -2,7 +2,7 @@
 const translations = {
     "pt": {
         nav_modules: "Módulos", nav_interface: "Interface", nav_architect: "Architect", nav_compliance: "Compliance", nav_deploy: "Deploy System",
-        hero_status: "SYSTEM OPERATIONAL // SECURE", hero_title_1: "HUB UNIFICADO DE", hero_title_2: "ENGENHARIA & SEC",
+        hero_status: "SYSTEM OPERATIONAL // SECURE", hero_title_1: "HUB UNIFICADO DE", hero_title_2: "DESENVOLVIMENTO & SEC",
         hero_desc: "Abandone ferramentas fragmentadas. Gerencie projetos, automatize infraestrutura e monitore vulnerabilidades em um ambiente 100% local e criptografado.",
         btn_install: "Instalar Core v1.0", btn_demo: "Ver Demo",
         stat_enc: "CRIPTOGRAFIA AES (BITS)", stat_cloud: "LATÊNCIA DE NUVEM", stat_local: "% CONTROLE LOCAL",
