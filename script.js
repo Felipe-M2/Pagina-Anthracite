@@ -29,7 +29,7 @@ const translations = {
     },
     "en": {
         nav_modules: "Modules", nav_interface: "Interface", nav_architect: "Architect", nav_compliance: "Compliance", nav_deploy: "Deploy System",
-        hero_status: "SYSTEM OPERATIONAL // SECURE", hero_title_1: "UNIFIED HUB FOR", hero_title_2: "ENGINEERING & SEC",
+        hero_status: "SYSTEM OPERATIONAL // SECURE", hero_title_1: "UNIFIED HUB FOR", hero_title_2: "DEVELOPMENT & SEC",
         hero_desc: "Ditch fragmented tools. Manage projects, automate infrastructure, and monitor vulnerabilities in a 100% local, encrypted environment.",
         btn_install: "Install Core v1.0", btn_demo: "Watch Demo",
         stat_enc: "AES ENCRYPTION BITS", stat_cloud: "CLOUD LATENCY", stat_local: "% LOCAL CONTROL",
